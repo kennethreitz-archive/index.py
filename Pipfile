@@ -4,3 +4,5 @@ verify_ssl = true
 
 [packages]
 docopt = "*"
+gunicorn = "*"
+Flask = "*"
