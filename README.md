@@ -11,9 +11,9 @@ This is an experiment — it might not go very far.
 - Use flask (or any other WSGI framework) if you want to, no configuration needed.
 - No maintinence/deployment required to make changes — just make changes to the filesystem.
 
-The real end goal here is to have a Python application running at playground.kennethreitz.org on a
-digital ocean box that can be used to host all sorts of applications and random files for fun, just
-by managing the filesystem — like it was in the PHP days.
+The real end goal here is to have a Python application running at `playground.kennethreitz.org` on a
+Digital Ocean box that can be used to host all sorts of applications and random files for fun, just
+by managing the filesystem — like it was back in the PHP days.
 
 ## Basic Structure of a Deployment
 
@@ -22,3 +22,8 @@ Subject to (vastly) change:
     root/index.py <-- provides infrasctructure for whole application
     root/sometoy/randofile <-- gets served
     root/sometoy/index.py <-- gets run automatically for this path, could be Flask.
+
+Likely a CLI runner, akin to:
+
+    $ index.py .
+    # spawns gunicorn app for you, with additional arguments.
