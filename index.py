@@ -17,7 +17,7 @@ Options:
 import sys
 
 from docopt import docopt
-from flask import Flask
+from flask import Flask, request
 from gunicorn import util
 from gunicorn.app.base import Application
 
@@ -65,7 +65,7 @@ class GunicornMeat(object):
     def __init__(self,app,**options):
         """ Construct our application """
 
-        self.app = WSGIApp(app,options)
+        self.app = WSGIApp(app, options)
 
     def run(self):
         """ Run our application """
@@ -79,6 +79,10 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello, World!'
 
+@app.after_request
+def after_request(response):
+    response.headers['X-Powered-By'] = 'index.py by Kenneth Reitz'
+    return response
 
 
 def do_info():
@@ -100,7 +104,7 @@ def do_serve(port):
     server = GunicornMeat(app=app, workers=4, type='sync')
     server.run()
 
-if __name__ == '__main__':
+def main():
     args = docopt(__doc__, version='index.py, version 0.0.0')
 
     if args['info']:
@@ -108,3 +112,7 @@ if __name__ == '__main__':
 
     if args['serve']:
       do_serve(port=args['--port'])
+
+
+if __name__ == '__main__':
+    main()
