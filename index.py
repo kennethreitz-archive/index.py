@@ -33,7 +33,7 @@ from gunicorn.app.base import Application
 
 class WSGIApp(Application):
 
-    def __init__(self, application, options={}):
+    def __init__(self, application, options=dict()):
         """ Construct the Application. Default gUnicorn configuration is loaded """
 
         self.application = application
@@ -55,14 +55,14 @@ class WSGIApp(Application):
     def load(self):
         """ Attempt an import of the specified application """
 
-        if isinstance(self.application,str):
+        if isinstance(self.application, str):
             return util.import_app(self.application)
         else:
             return self.application
 
 class GunicornMeat(object):
 
-    def __init__(self,app,**options):
+    def __init__(self, app, **options):
         """ Construct our application """
 
         self.app = WSGIApp(app, options)
@@ -101,7 +101,7 @@ def do_serve(port):
             sys.exit(1)
 
     print 'Serving on port {0}.'.format(port)
-    server = GunicornMeat(app=app, workers=4, type='sync')
+    server = GunicornMeat(app=app, workers=4, type='sync', bind='0.0.0.0:{0}'.format(port))
     server.run()
 
 def main():
