@@ -14,17 +14,15 @@ Options:
 """
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import os
 import multiprocessing
 import sys
 
 
 import crayons
+import delegator
 from docopt import docopt
-from flask import Flask, request
-from gunicorn import util
-from gunicorn.app.base import Application
+from flask import Flask, request, abort
 from livereload import Server as ReloadServer
 from whitenoise import WhiteNoise
 
@@ -42,7 +40,7 @@ from whitenoise import WhiteNoise
 def number_of_workers():
     return multiprocessing.cpu_count() + 1
 
-def yield_fs(dir):
+def yield_files(dir, endswith):
     for root, dirs, files in os.walk(dir):
 
         # Cleanup root.
@@ -51,22 +49,8 @@ def yield_fs(dir):
         # Exclude directories that start with a period.
         if not root.startswith('.'):
             for file in files:
-                if not file.endswith('.py'):
+                if file.endswith(endswith):
                     yield os.sep.join((root, file))
-            # if not result.startswith('.'):
-                # yield result
-
-def fs_map(dir):
-    print('Valid paths:')
-    for file in yield_fs(dir):
-        print(file)
-
-    return dir
-
-
-
-
-
 
 
 def do_info():
@@ -96,6 +80,35 @@ def convert_port(port):
 
     return port
 
+def prepare_extras(request):
+    extras = {}
+
+    # 
+    if request.json:
+        extras.update(request.json)
+    if request.form:    
+        extras.update(request.form)
+    
+    if request.args:
+        extras.update(request.args)
+
+    extra = []
+
+    for key, values in extras.items():
+        for value in values:
+            extra.append((key, value))
+    
+    return extra
+
+def find(endswith, dir, path):
+    found = None
+    for fs_path in yield_files(dir, endswith):
+        print '{0}{1}'.format(path, endswith) 
+        print fs_path
+        print
+        if '{0}{1}'.format(path, endswith) in fs_path:
+            return fs_path
+
 def do_serve(dir, port):
     """Runs the 'serve' command, from the CLI."""
 
@@ -105,9 +118,44 @@ def do_serve(dir, port):
 
     app = Flask(__name__)
 
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World!'
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+
+        # Support for index.html.
+        found = find('index.html', dir, path)
+        
+        # Support for index.py
+        if not found:
+            found = find('index.py', dir, path)
+
+        # Support for directory listing.
+        if not found:
+            found = find('.py', dir, path)
+        
+
+        # A wild script was found!
+        if found:
+            if '.py' in found:
+                extras = prepare_extras(request)
+            
+                for key, value in extras:
+                    os.environ[key] = value
+                
+                c = delegator.run('python {0}'.format(found))
+
+                for key, value in extras:
+                    del os.environ[key]
+
+                return c.out
+
+            elif '.html' in found:
+                with open(found) as html:
+                    return html.read()
+
+        else:
+            abort(404)
+
 
     @app.before_request
     def before_request():
