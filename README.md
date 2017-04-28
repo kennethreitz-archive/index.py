@@ -19,9 +19,9 @@ by managing the filesystem — like it was back in the PHP days.
 
 Subject to (vastly) change:
 
-    root/index.py <-- provides infrasctructure for whole application
-    root/sometoy/randofile <-- gets served
-    root/sometoy/index.py <-- gets run automatically for this path, could be Flask.
+    root/index.py <--gets served by default
+    root/sometoy/somefile.txt <-- gets served
+    root/sometoy/index.py <-- gets run automatically for /sometoy/, stdout is output.
 
 Likely a CLI runner, akin to:
 
