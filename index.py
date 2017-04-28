@@ -15,6 +15,7 @@ Options:
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import os
 import multiprocessing
 import sys
 
@@ -66,7 +67,7 @@ def fs_map(dir):
 
 
 
-import os
+
 
 def do_info():
     """Runs the 'info' command, from the CLI."""
