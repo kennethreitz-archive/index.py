@@ -15,13 +15,17 @@ Options:
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import multiprocessing
 import sys
+
 
 import crayons
 from docopt import docopt
 from flask import Flask, request
 from gunicorn import util
 from gunicorn.app.base import Application
+from livereload import Server as ReloadServer
+from whitenoise import WhiteNoise
 
 
 # \
@@ -33,58 +37,32 @@ from gunicorn.app.base import Application
 #      !||   :||
 #       '''   '''
 
-class WSGIApp(Application):
 
-    def __init__(self, application, options=dict()):
-        """ Construct the Application. Default gUnicorn configuration is loaded """
+def number_of_workers():
+    return multiprocessing.cpu_count() + 1
 
-        self.application = application
-        self.usage = None
-        self.callable = None
-        self.options = options
-        self.prog = None
-        self.do_load_config()
+def yield_fs(dir):
+    for root, dirs, files in os.walk(dir):
 
-    def init(self, parser, opts, args):
-        """ Apply our custom settings """
+        # Cleanup root.
+        root = root[len(dir) + 1:]
 
-        cfg = {}
-        for k, v in self.options.items():
-            if k.lower() in self.cfg.settings and v is not None:
-                cfg[k.lower()] = v
-        return cfg
+        # Exclude directories that start with a period.
+        if not root.startswith('.'):
+            for file in files:
+                if not file.endswith('.py'):
+                    yield os.sep.join((root, file))
+            # if not result.startswith('.'):
+                # yield result
 
-    def load(self):
-        """ Attempt an import of the specified application """
+def fs_map(dir):
+    print('Valid paths:')
+    for file in yield_fs(dir):
+        print(file)
 
-        if isinstance(self.application, str):
-            return util.import_app(self.application)
-        else:
-            return self.application
-
-class GunicornMeat(object):
-
-    def __init__(self, app, **options):
-        """ Construct our application """
-
-        self.app = WSGIApp(app, options)
-
-    def run(self):
-        """ Run our application """
-
-        self.app.run()
+    return dir
 
 
-app = Flask(__name__)
-
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-@app.after_request
-def after_request(response):
-    response.headers['X-Powered-By'] = 'index.py by Kenneth Reitz'
-    return response
 
 
 
@@ -120,18 +98,33 @@ def convert_port(port):
 def do_serve(dir, port):
     """Runs the 'serve' command, from the CLI."""
 
-    # Convert dir to appropriate value.
+    # Convert dir and port to appropriate values.
     dir = convert_dir(dir)
-
-    # Convert port to appropriate value.
     port = convert_port(port)
+
+    app = Flask(__name__)
+
+    @app.route('/')
+    def hello_world():
+        return 'Hello, World!'
+
+    @app.before_request
+    def before_request():
+        app.add_files(dir, prefix='/')
+
+    @app.after_request
+    def after_request(response):
+        response.headers['X-Powered-By'] = 'index.py by Kenneth Reitz'
+        return response
+
+    app = WhiteNoise(app, root=dir)
+    server = ReloadServer(app)
+    server.watch('{0}/**'.format(dir))
 
     # Alert the user.
     print(crayons.yellow('Serving up \'{0}\' on port {1}.'.format(dir, port)))
-    server = GunicornMeat(app=app, workers=4, type='sync', bind='0.0.0.0:{0}'.format(port))
+    server.serve(port=port)
 
-    # Start the web server.
-    server.run()
 
 def main():
     args = docopt(__doc__, version='index.py, version 0.0.0')
