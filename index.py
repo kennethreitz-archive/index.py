@@ -96,6 +96,12 @@ def find(endswith, dir, path):
         if '{0}{1}'.format(path, endswith) in fs_path:
             return fs_path
 
+def directory_listing(path):
+    html = ''
+    for i in os.listdir(path):
+        html += '<li><a href="{0}">{0}</a></li>'.format(i)
+    return html
+
 def do_serve(dir, port):
     """Runs the 'serve' command, from the CLI."""
 
@@ -103,9 +109,11 @@ def do_serve(dir, port):
     dir = convert_dir(dir)
     port = convert_port(port)
 
+    os.chdir(dir)
+
     app = Flask(__name__)
 
-    @app.route('/', defaults={'path': ''})
+    @app.route('/', defaults={'path': './'})
     @app.route('/<path:path>')
     def catch_all(path):
 
@@ -137,10 +145,18 @@ def do_serve(dir, port):
                 return c.out
 
             elif '.html' in found:
+                # Strip prepending slashes. 
+                if found.startswith('/'):
+                    found = found[1:]
+                
+                # Open the file, and spit out the contents. 
                 with open(found) as html:
                     return html.read()
 
         else:
+            if os.path.isdir(path):
+                return directory_listing(path)
+
             abort(404)
 
 
