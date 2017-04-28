@@ -27,19 +27,6 @@ from livereload import Server as ReloadServer
 from whitenoise import WhiteNoise
 
 
-# \
-#  \ji
-#  /.(((
-#  (,/"(((__,--.
-#     \  ) _( /{
-#      !|| " :||
-#      !||   :||
-#       '''   '''
-
-
-def number_of_workers():
-    return multiprocessing.cpu_count() + 1
-
 def yield_files(dir, endswith):
     for root, dirs, files in os.walk(dir):
 

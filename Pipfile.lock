@@ -1,0 +1,85 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "448a34cd8abd93376323d39b55b85192ca588c0c2c361fdc7f538849f46bdf62"
+        },
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.python.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "Flask": {
+            "hash": "sha256:6c3130c8927109a08225993e4e503de4ac4f2678678ae211b33b519c622a7242",
+            "version": "==0.12.1"
+        },
+        "Jinja2": {
+            "hash": "sha256:2231bace0dfd8d2bf1e5d7e41239c06c9e0ded46e70cc1094a0aa64b0afeb054",
+            "version": "==2.9.6"
+        },
+        "MarkupSafe": {
+            "hash": "sha256:a6be69091dac236ea9c6bc7d012beab42010fa914c459791d627dad4910eb665",
+            "version": "==1.0"
+        },
+        "Werkzeug": {
+            "hash": "sha256:918322630c58fa52b89e14c45de3ad78514e18928dac726060bb89cd647f6b83",
+            "version": "==0.12.1"
+        },
+        "backports_abc": {
+            "hash": "sha256:52089f97fe7a9aa0d3277b220c1d730a85aefd64e1b2664696fe35317c5470a7",
+            "version": "==0.5"
+        },
+        "certifi": {
+            "hash": "sha256:f4318671072f030a33c7ca6acaef720ddd50ff124d1388e50c1bda4cbd6d7010",
+            "version": "==2017.4.17"
+        },
+        "click": {
+            "hash": "sha256:29f99fc6125fbc931b758dc053b3114e55c77a6e4c6c3a2674a2dc986016381d",
+            "version": "==6.7"
+        },
+        "colorama": {
+            "hash": "sha256:463f8483208e921368c9f306094eb6f725c6ca42b0f97e313cb5d5512459feda",
+            "version": "==0.3.9"
+        },
+        "crayons": {
+            "hash": "sha256:6f51241d0c4faec1c04c1c0ac6a68f1d66a4655476ce1570b3f37e5166a599cc",
+            "version": "==0.1.2"
+        },
+        "docopt": {
+            "hash": "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491",
+            "version": "==0.6.2"
+        },
+        "gunicorn": {
+            "hash": "sha256:75af03c99389535f218cc596c7de74df4763803f7b63eb09d77e92b3956b36c6",
+            "version": "==19.7.1"
+        },
+        "itsdangerous": {
+            "hash": "sha256:cbb3fcf8d3e33df861709ecaf89d9e6629cff0a217bc2848f1b41cd30d360519",
+            "version": "==0.24"
+        },
+        "livereload": {
+            "hash": "sha256:5ed6506f5d526ee712da9f3739c27714e6f3376f3e481728d298efceae0ec83a",
+            "version": "==2.5.1"
+        },
+        "singledispatch": {
+            "hash": "sha256:833b46966687b3de7f438c761ac475213e53b306740f1abfaa86e1d1aae56aa8",
+            "version": "==3.4.0.3"
+        },
+        "six": {
+            "hash": "sha256:0ff78c403d9bccf5a425a6d31a12aa6b47f1c21ca4dc2573a7e2f32a97335eb1",
+            "version": "==1.10.0"
+        },
+        "tornado": {
+            "hash": "sha256:db0904a28253cfe53e7dedc765c71596f3c53bb8a866ae50123320ec1a7b73fd",
+            "version": "==4.5.1"
+        },
+        "whitenoise": {
+            "hash": "sha256:1d62a003a0ab747de96da45c831cbb512dcb7f69c1ef0bd20b1cd4ae45d8a0c4",
+            "version": "==3.3.0"
+        }
+    },
+    "develop": {}
+}
