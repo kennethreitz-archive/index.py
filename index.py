@@ -55,6 +55,7 @@ def convert_dir(dir):
 
     return dir
 
+
 def convert_port(port):
     if port is None:
         port = '8080'
@@ -66,6 +67,7 @@ def convert_port(port):
             sys.exit(1)
 
     return port
+
 
 def prepare_extras(request):
     extras = {}
@@ -87,6 +89,7 @@ def prepare_extras(request):
     
     return extra
 
+
 def find(endswith, dir, path):
     found = None
     for fs_path in yield_files(dir, endswith):
@@ -95,12 +98,15 @@ def find(endswith, dir, path):
         print
         if '{0}{1}'.format(path, endswith) in fs_path:
             return fs_path
+    return found
+
 
 def directory_listing(path):
     html = ''
     for i in os.listdir(path):
         html += '<li><a href="{0}">{0}</a></li>'.format(i)
     return html
+
 
 def do_serve(dir, port):
     """Runs the 'serve' command, from the CLI."""
@@ -127,7 +133,6 @@ def do_serve(dir, port):
         # Support for directory listing.
         if not found:
             found = find('.py', dir, path)
-        
 
         # A wild script was found!
         if found:
@@ -159,7 +164,6 @@ def do_serve(dir, port):
 
             abort(404)
 
-
     @app.before_request
     def before_request():
         app.add_files(dir, prefix='/')
@@ -182,10 +186,10 @@ def main():
     args = docopt(__doc__, version='index.py, version 0.0.0')
 
     if args['info']:
-      do_info()
+        do_info()
 
     if args['serve']:
-      do_serve(dir=args['<dir>'], port=args['--port'])
+        do_serve(dir=args['<dir>'], port=args['--port'])
 
 
 if __name__ == '__main__':
